@@ -50,7 +50,7 @@ export const TaskChat = () => {
       try {
           const { Configuration, OpenAIApi } = require("openai");
           const configuration = new Configuration({
-            apiKey: "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",
+            apiKey: "<yourAPIKey>",
           });
           const openai = new OpenAIApi(configuration);
           resp = await openai.createChatCompletion({
