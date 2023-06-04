@@ -50,10 +50,10 @@ export const TaskChat = () => {
       try {
           const { Configuration, OpenAIApi } = require("openai");
           const configuration = new Configuration({
-            apiKey: "<yourAPIKey>",
+            apiKey: "***************************",
           });
           const openai = new OpenAIApi(configuration);
-          resp = await openai.createChatCompletion({
+          response = await openai.createChatCompletion({
             model: 'gpt-3.5-turbo',
             temperature: 0,
             messages: [
@@ -63,33 +63,17 @@ export const TaskChat = () => {
               },
             ]
           });
- 
-          /*const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-            model: 'gpt-3.5-turbo',
-            temperature: 0,
-            messages: [
-              {
-                role: 'assistant',
-                content: text,
-              },
-            ],
-          }, {
-            headers: {
-              'Authorization': 'Bearer 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',
-              'Content-Type': 'application/json',
-            },
-          });
-      
           const { choices } = response.data;
-          const answer = choices[0].message.content;
-          console.log(resp);*/
+          resp = choices[0].message.content;
+          
+          setFields(prevFields => [...prevFields, resp]);
         } catch (error) {
           console.error(error);
           console.log(typeof(error.message) + " " + error.message);
           resp = error.message;
+          setFields(prevFields => [...prevFields, resp]);
           // Handle error
         } finally { 
-           setFields(prevFields => [...prevFields, resp]);
         }
       }
   
