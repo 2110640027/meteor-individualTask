@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import {
-  FormControl,
   Input,
   Button,
-  FormErrorMessage,
   Box,
-  InputGroup,
-  InputRightElement,
   Drawer,
   DrawerBody,
   DrawerFooter,
@@ -16,16 +12,8 @@ import {
   DrawerCloseButton,
   useDisclosure,
   Grid,
-  GridItem,
-  Stack,
   Textarea
 } from '@chakra-ui/react';
-import { ErrorStatus } from '../lib/ErrorStatus';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { insertTask } from '../../api/tasks/tasks.mutations';
-import axios from 'axios';
 
 export const TaskChat = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -34,6 +22,8 @@ export const TaskChat = () => {
     const [fields, setFields] = useState([]);
 
     const [inputText, setInputText] = useState('');
+
+    var messages = [{role: 'system', content: 'You are a helpful assistant.'}];
 
     const addTextField = () => {
       setFields(prevFields => [...prevFields, inputText]);
@@ -46,35 +36,20 @@ export const TaskChat = () => {
     };
 
     async function sendChatRequest(text) {
-      var resp = "";
-      try {
-          const { Configuration, OpenAIApi } = require("openai");
-          const configuration = new Configuration({
-            apiKey: "***************************",
-          });
-          const openai = new OpenAIApi(configuration);
-          response = await openai.createChatCompletion({
-            model: 'gpt-3.5-turbo',
-            temperature: 0,
-            messages: [
-              {
-                role: 'user',
-                content: text,
-              },
-            ]
-          });
-          const { choices } = response.data;
-          resp = choices[0].message.content;
-          
-          setFields(prevFields => [...prevFields, resp]);
-        } catch (error) {
-          console.error(error);
-          console.log(typeof(error.message) + " " + error.message);
-          resp = error.message;
-          setFields(prevFields => [...prevFields, resp]);
-          // Handle error
-        } finally { 
+      //var resp = "";
+      const userMessage = { role: 'user', content: inputText };
+      messages.push(userMessage)
+      
+      Meteor.call('sendChatGPTRequest', messages, (error, result) => {
+        if (error) {
+          console.error('ChatGPT API request error:', error);
+          setFields(prevFields => [...prevFields, error]);
+        } else {
+          // Process the response
+          messages.push({ role: 'assistant', content: result })
+          setFields(prevFields => [...prevFields, result]);
         }
+      });
       }
   
     return (
@@ -103,7 +78,7 @@ export const TaskChat = () => {
   
             <DrawerBody>
             {fields.map((field, index) => (
-               <Textarea isDisabled key={index} type="text" value={field} readOnly style={{ overflow: 'hidden' }}/>
+               <Textarea isDisabled key={index} type="text" value={field} readOnly style={{ cursor: "default" }}/>
             ))}
             </DrawerBody>
   

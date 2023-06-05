@@ -10,3 +10,10 @@ File contains an adapted version of the original simpletask file.
 
 This file contains the logic to add chatgpt as assistent.
 
+## 3. `mup.jsx`
+
+This an example of the mup file to deploy the application in the aws cloud.
+
+## 4. `mai.js`
+
+In this file you can find the API request as http POST request.
