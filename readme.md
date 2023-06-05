@@ -14,6 +14,11 @@ This file contains the logic to add chatgpt as assistent.
 
 This an example of the mup file to deploy the application in the aws cloud.
 
-## 4. `mai.js`
+## 4. `main.js`
 
 In this file you can find the API request as http POST request.
+
+## 4. `settings.json`
+
+This file includes the env variable with the secret key for the backend
+
